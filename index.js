@@ -59,6 +59,18 @@ server.post('/api/users', (req, res) => {
     })
 });
 
+server.delete('/api/users/:id', (req, res) => {
+    const {id} = req.params;
+
+    db.remove(id)
+    .then(removedUser => {
+        res.status(200).send(removedUser);
+    })
+    .catch(() => {
+        res.status(400).send('Uh oh, there has been an error')
+    })
+});
+
 server.listen(port, () => {   // waiting for request
     console.log(`server is listening on port ${port}`); // response
 });
