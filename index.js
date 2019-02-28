@@ -3,7 +3,7 @@ const express = require('express'); // import express framework as a function
 const server = express(); // use express as server object
 server.use(express.json()); // json for the win
 
-const cors = require('cors');  // cross-origin resource sharing
+const cors = require('cors');  // cross-origin resource sharing for react
 server.use(cors());
 
 const db = require('./data/db'); // db data
@@ -39,11 +39,25 @@ server.get('/api/users/:id', (req, res) => {
     })
 });
 
-// server.post('/api/users, (req, res) => {
+server.post('/api/users', (req, res) => {
+    const {name, bio} = req.body;
+    const newUser = {name, bio};
 
+    db.insert(newUser)
+    .then(userId => {
+        const {id} = userId;
 
-
-// });
+        db.findById(id).then(user => {
+            if (!user) {
+                res.status(422).send('That user does not exist')
+            }
+            res.status(201).send(user);
+        });
+    })
+    .catch(() => {
+        res.status(422).send('That user does not exist')
+    })
+});
 
 server.listen(port, () => {   // waiting for request
     console.log(`server is listening on port ${port}`); // response
