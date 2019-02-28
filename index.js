@@ -71,6 +71,20 @@ server.delete('/api/users/:id', (req, res) => {
     })
 });
 
+server.put('/api/users/:id', (req, res) => {
+    const {id} = req.params;
+    const {name, bio} = req.body;
+    const newUser = {name, bio};
+
+    db.update(id, newUser)
+    .then(user => {
+        res.status(200).send(user)
+    })
+    .catch(() => {
+        res.status(400).send('Uh oh, there has been an error')
+    })
+});
+
 server.listen(port, () => {   // waiting for request
     console.log(`server is listening on port ${port}`); // response
 });
